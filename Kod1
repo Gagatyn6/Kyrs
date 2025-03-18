@@ -1,0 +1,36 @@
+use std::env;
+use std::fs::File;
+use std::io::{self, BufReader, BufRead};
+
+fn count_lines_in_file(file_path: &str) -> io::Result<usize> {
+    // Відкриваємо файл для читання
+    let file = File::open(file_path)?;
+    let reader = BufReader::new(file);
+    
+    // Підраховуємо кількість рядків
+    let line_count = reader.lines().count();
+    
+    Ok(line_count)
+}
+
+fn main() {
+    // Отримуємо шлях до файлу з аргументів командного рядка
+    let args: Vec<String> = env::args().collect();
+    
+    if args.len() < 2 {
+        eprintln!("Будь ласка, вкажіть шлях до файлу.");
+        std::process::exit(1);
+    }
+
+    let file_path = &args[1];
+
+    match count_lines_in_file(file_path) {
+        Ok(line_count) => {
+            println!("Кількість рядків у файлі '{}': {}", file_path, line_count);
+        }
+        Err(e) => {
+            eprintln!("Помилка при відкритті файлу '{}': {}", file_path, e);
+            std::process::exit(1);
+        }
+    }
+}
